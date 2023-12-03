@@ -292,7 +292,9 @@ int findMST(adjacent_t* adj, int n){
     quick_sort(edge_arr, 0, num_edges-1);
 
     int n1, n2, set1, set2;
+    int count = 0;
     for(int i=0; i<num_edges; i++){
+        if(count == n-1) break;
         n1 = edge_arr[i].node1;
         n2 = edge_arr[i].node2;
 
@@ -301,21 +303,20 @@ int findMST(adjacent_t* adj, int n){
         if(set1 != set2){
             sum += edge_arr[i].weight;
             union_set(sets, set1, set2);
+            count++;
         }
     }
 
     free(edge_arr);
 
-    int representer = find_set(sets, 0);
-    for(int i=1; i<n; i++){
-        if((find_set(sets, i)) != representer){
-            free(sets);
-            return -1;
-        }
-    }
-
     free(sets);
+
+    if(count!=n-1) return -1;
 
     return sum;
 }
+
+
+
+
 
