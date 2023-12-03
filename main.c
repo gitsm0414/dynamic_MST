@@ -54,14 +54,14 @@ int main()
     char line[50];
 
     //opening input file
-    infile = fopen("mstin.txt", "r");
+    infile = fopen("mst.in", "r");
     if (infile == NULL) {
         printf("Input file opening error.\n");
         return 1;
     }
 
     //opening output file
-    outfile = fopen("mstout.txt", "a");
+    outfile = fopen("mst.out", "a");
     if(outfile == NULL){
         printf("Output file opening error.\n");
         return 1;
@@ -71,7 +71,6 @@ int main()
     if (fgets(line, sizeof(line), infile)) {
         sscanf(line, "%d", &n);
 
-        printf("%d\n", n);//
     }
 
     //initialize adjacency lists
@@ -92,11 +91,9 @@ int main()
                     result = findMST(adj_lists, n);
                     if(result == -1){
                         fprintf(outfile, "Disconnected\n");
-                        printf("Disconnected\n");//
                     }
                     else{
                         fprintf(outfile, "%d\n", result);
-                        printf("%d\n", result);//
                     }
 
             }else if(strcmp(cmd, "insertEdge")==0 && ssc==4){
@@ -162,27 +159,26 @@ void swap_edges(edge_t* e1, edge_t* e2){
     e2->weight = temp;
 }
 
+//using Hoare's partitioning algorithm
 int e_partition(edge_t* arr, int s, int e){
     int pivot_w = arr[s].weight;
+    int i = s-1, j = e+1;
 
-    int i = s+1;
-    int j = e;
-    while(i <= j){
-        while(pivot_w >= arr[i].weight && i<e){
+    while(1){
+        do{
             i++;
-        }
-        while(pivot_w <= arr[j].weight && j>s+1){
+        }while(arr[i].weight < pivot_w);
+
+        do{
             j--;
-        }
-        if(i > j){
-            swap_edges(&arr[s], &arr[j]);
+        }while(arr[j].weight > pivot_w);
 
-        }else{
-            swap_edges(&arr[i], &arr[j]);
+        if(i>=j){
+            return j;
         }
+
+        swap_edges(&arr[i], &arr[j]);
     }
-
-    return j;
 }
 
 void quick_sort(edge_t* arr, int s, int e){
